@@ -1,0 +1,23 @@
+---
+
+#########
+# Users #
+#########
+
+elao_users:
+  - name:   "{{ _user }}"
+    group:  users
+    groups: ['sudo']
+
+_users_admin_keys:
+  - "{{ lookup('file', playbook_dir ~ '/files/users/keys/hyvs') }}"
+  - "{{ lookup('file', playbook_dir ~ '/files/users/keys/kariboo') }}"
+
+_users_bepro_keys:
+  - "{{ lookup('file', playbook_dir ~ '/files/users/keys/adun') }}"
+
+elao_users_authorized_keys:
+  - user: root
+    keys: "{{ _users_admin_keys }}"
+  - user: "{{ _user }}"
+    keys: "{{ _users_admin_keys + _users_bepro_keys }}"

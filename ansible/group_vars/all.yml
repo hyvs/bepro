@@ -1,0 +1,67 @@
+---
+
+_env:  "{{ 'dev' if 'env_dev' in group_names else 'prod' }}"
+_user: "{{ 'vagrant' if 'env_dev' in group_names else 'bepro' }}"
+
+########
+# Motd #
+########
+
+elao_motd_template:  "{{ playbook_dir ~ '/templates/motd.j2' }}"
+elao_motd:           eXcellent
+
+############
+# Timezone #
+############
+
+elao_timezone: Etc/UTC
+
+#######
+# Env #
+#######
+
+elao_env: []
+
+#######
+# Apt #
+#######
+
+elao_apt_update: true
+
+elao_apt_repositories:
+  - backports
+  - dotdeb
+  - dotdeb_php56
+  - nginx
+
+elao_apt_preferences:
+  - git@backports
+  - file: dotdeb
+    template: preferences/dotdeb_low.j2
+  - php@dotdeb_php56
+  - nginx@nginx
+  - mysql@dotdeb
+
+elao_apt_packages: []
+
+#######
+# Ssh #
+#######
+
+elao_ssh_config_sshd_template: config/sshd/{{ _env }}.j2
+
+elao_ssh_config_template: config/{{ _env }}.j2
+
+#######
+# Git #
+#######
+
+elao_git_config_template: config/{{ _env }}.j2
+
+#############
+# Oh my zsh #
+#############
+
+elao_ohmyzsh_users:
+  - user:     "{{ _user }}"
+    template: users/{{ _env }}.j2

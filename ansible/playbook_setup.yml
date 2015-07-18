@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  remote_user: root
+  connection: ssh
+  roles:
+    - { role: elao.apt,
+        elao_apt_upgrade: true
+      }
+    - { role: elao.sudo }
+    - { role: elao.pam-ssh-agent-auth }
+    - { role: elao.users }
+    - { role: elao.ssh }

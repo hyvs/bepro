@@ -1,0 +1,95 @@
+---
+
+- hosts: all
+  sudo:  yes
+  roles:
+    - { role: elao.motd }
+    - { role: elao.timezone }
+    - { role: elao.env }
+    - { role: elao.apt }
+    - { role: elao.users, tags: ['users'] }
+    - { role: elao.ssh }
+    - { role: elao.git }
+    - { role: elao.zsh }
+    - { role: elao.ohmyzsh }
+    - { role: elao.vim }
+
+- hosts: mysql
+  sudo:  yes
+  vars_files:
+    - vars/vault.yml
+  roles:
+    - { role: elao.mysql }
+
+- hosts: forum
+  sudo:  yes
+  vars_files:
+    - vars/vault.yml
+  vars:
+    _phpbb_version: 3.1.5
+    _phpbb_checksum: 8a9f845f0c3cdb9dad8ee35ca40e4bb96f82c6305313766658b31442234ee144
+    _forum_dir: /srv/phpBB3
+    _forum_host: "{{ 'forum.bepro.dev' if 'env_dev' in group_names else 'forum.bepro.fr' }}"
+  pre_tasks:
+    - name: Download phpBB tarball
+      get_url:
+        url:  "https://www.phpbb.com/files/release/phpBB-{{ _phpbb_version }}.tar.bz2"
+        dest: /tmp
+        sha256sum: "{{ _phpbb_checksum }}"
+    - name: Extract phpBB tarball
+      unarchive:
+        src: "/tmp/phpBB-{{ _phpbb_version }}.tar.bz2"
+        dest: /srv
+        copy: no
+        mode: 0755
+        owner: "{{ _user }}"
+        group: users
+        creates: "{{ _forum_dir }}/index.php"
+  roles:
+    - { role: elao.acl }
+    - { role: elao.files, tags: ['files'],
+        elao_files: "{{ _forum_files }}"
+      }
+    - { role: elao.php }
+    - { role: elao.curl }
+    - { role: elao.composer }
+    - { role: elao.nginx }
+
+- hosts: teamspeak
+  sudo:  yes
+  vars_files:
+    - vars/vault.yml
+  vars:
+    _teamspeak_version: 3.0.10.3
+    _teamspeak_dir: /opt/teamspeak3-server_linux-amd64
+    _teamspeak_user: teamspeak
+    _teamspeak_group: teamspeak
+  pre_tasks:
+    - name: Download teamspeak tarball
+      get_url:
+        url: "http://teamspeak.gameserver.gamed.de/ts3/releases/{{ _teamspeak_version }}/teamspeak3-server_linux-amd64-{{ _teamspeak_version }}.tar.gz"
+        dest: /tmp
+    - name: Extract teamspeak tarball
+      unarchive:
+        src: "/tmp/teamspeak3-server_linux-amd64-{{ _teamspeak_version }}.tar.gz"
+        dest: /opt
+        copy: no
+        mode: 0755
+        owner: "{{ _user }}"
+        group: users
+        creates: "{{ _teamspeak_dir }}/ts3server_linux_amd64"
+  post_tasks:
+    - name: update rc
+      command: update-rc.d ts3 defaults
+  roles:
+    - { role: elao.apt, tags: ['apt'],
+        elao_apt_repositories: "{{ _teamspeak_apt_repositories }}",
+        elao_apt_packages: "{{ _teamspeak_apt_packages }}"
+      }
+    - { role: elao.users, tags: ['users'],
+        elao_users: "{{ _teamspeak_users }}",
+        elao_users_groups: "{{ _teamspeak_users_groups }}"
+      }
+    - { role: elao.files, tags: ['files'],
+        elao_files: "{{ _teamspeak_files }}"
+      }

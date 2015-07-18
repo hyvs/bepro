@@ -1,0 +1,9 @@
+backups/*
+!backups/.gitkeep
+
+# Vagrant
+.vagrant/
+#
+# Ansible
+ansible.cfg
+/ansible/roles/*.*/

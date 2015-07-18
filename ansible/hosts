@@ -1,0 +1,14 @@
+[env_dev]
+localhost
+
+[env_prod]
+bepro.fr
+
+[mysql]
+bepro.fr
+
+[forum]
+bepro.fr
+
+[teamspeak]
+bepro.fr

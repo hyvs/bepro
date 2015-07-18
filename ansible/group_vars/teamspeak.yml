@@ -1,0 +1,84 @@
+---
+
+#######
+# Apt #
+#######
+
+_teamspeak_apt_repositories:
+  - source: deb http://archive.debian.org/debian lenny main
+
+_teamspeak_apt_packages:
+  - name: libmysqlclient15off
+
+#########
+# Users #
+#########
+
+_teamspeak_users:
+  - name: "{{ _teamspeak_user }}"
+    group: "{{ _teamspeak_group }}"
+
+_teamspeak_users_groups:
+  - name: "{{ _teamspeak_group }}"
+    system: true
+
+#########
+# Files #
+#########
+
+_teamspeak_files:
+  - path:  "{{ _teamspeak_dir }}"
+    owner: "{{ _teamspeak_user }}"
+    group: "{{ _teamspeak_group }}"
+    state: directory
+    recurse: true
+  - path:  "{{ _teamspeak_dir }}/ts3server.ini"
+    owner: "{{ _teamspeak_user }}"
+    group: "{{ _teamspeak_group }}"
+    content: |
+      machine_id=
+      default_voice_port=9987
+      voice_ip=0.0.0.0
+      licensepath=
+      filetransfer_port=30033
+      filetransfer_ip=0.0.0.0
+      query_port=10011
+      query_ip=0.0.0.0
+      query_ip_whitelist=query_ip_whitelist.txt
+      query_ip_blacklist=query_ip_blacklist.txt
+      dbsqlpath=sql/
+      dbplugin=ts3db_mysql
+      dbsqlcreatepath=create_mysql/
+      dbpluginparameter=ts3db_mysql.ini
+      dbconnections=10
+      logpath=logs
+      logquerycommands=0
+      dbclientkeepdays=30
+      logappend=0
+      query_skipbruteforcecheck=0
+  - path:  "{{ _teamspeak_dir }}/ts3db_mysql.ini"
+    owner: "{{ _teamspeak_user }}"
+    group: "{{ _teamspeak_group }}"
+    content: |
+      [config]
+      host=127.0.0.1
+      port=3306
+      username=bepro_teamspeak
+      password={{ _teamspeak_db_password }}
+      database=bepro_teamspeak
+      socket=
+  - path:  "{{ _teamspeak_dir }}/query_ip_blacklist.txt"
+    owner: "{{ _teamspeak_user }}"
+    group: "{{ _teamspeak_group }}"
+    content: |
+  - path:  "{{ _teamspeak_dir }}/query_ip_whitelist.txt"
+    owner: "{{ _teamspeak_user }}"
+    group: "{{ _teamspeak_group }}"
+    content: |
+      127.0.0.1
+  - path:  "/etc/init.d/ts3"
+    state: file
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+    template: "{{ playbook_dir ~ '/templates/teamspeak/ts3.j2' }}"

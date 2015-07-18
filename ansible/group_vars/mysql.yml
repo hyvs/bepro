@@ -1,0 +1,28 @@
+---
+
+#########
+# MySql #
+#########
+
+elao_mysql_configs_exclusive: true
+elao_mysql_configs:
+  - file: my.cnf
+    template: configs/{{ _env }}.cnf.j2
+
+elao_mysql_users:
+  - name:     admin
+    password: "{{ _mysql_admin_password }}"
+    host:     127.0.0.1
+    priv:     "*.*:ALL,GRANT"
+  - name:     bepro_forum
+    password: "{{ _forum_db_password }}"
+    host:     127.0.0.1
+    priv:     "bepro_forum.*:ALL"
+  - name:     bepro_teamspeak
+    password: "{{ _teamspeak_db_password }}"
+    host:     127.0.0.1
+    priv:     "bepro_teamspeak.*:ALL"
+
+elao_mysql_databases:
+  - name: bepro_forum
+  - name: bepro_teamspeak
