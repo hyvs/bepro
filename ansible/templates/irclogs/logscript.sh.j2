@@ -1,0 +1,10 @@
+#!/bin/sh
+irssilogs={{ _irclogs_dir}}
+wwwlogs={{ _irclogs_www_dir }}
+lastlog=$(ls -tr $irssilogs/log-* | tail -1)
+
+for logfile in $lastlog
+do
+  cp $lastlog $wwwlogs/`basename $lastlog`
+  chmod og+r  $wwwlogs/`basename $lastlog`
+done;

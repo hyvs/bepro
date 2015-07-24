@@ -1,0 +1,24 @@
+#!/bin/sh
+archivemonth=$(date --date='1 day ago' +%m)
+archiveyear=$(date --date='1 day ago' +%Y)
+archivefolder=$archivemonth-$archiveyear
+irssilogpath={{ _irclogs_dir}}
+weblogpath={{ _irclogs_www_dir }}
+
+#
+loglist=$(ls $irssilogpath/log-$archivemonth-*)
+mkdir $irssilogpath/$archivefolder
+
+for logfile in $loglist
+do
+   mv $irssilogpath/$(basename $logfile) $irssilogpath/$archivefolder/$(basename $logfile)
+done;
+
+#
+logutflist=$(ls $weblogpath/log-$archivemonth-*)
+mkdir $weblogpath/$archivefolder
+
+for logfileutf in $logutflist
+do
+   mv $weblogpath/$(basename $logfileutf) $weblogpath/$archivefolder/$(basename $logfileutf)
+done;

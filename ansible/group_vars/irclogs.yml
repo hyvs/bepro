@@ -1,0 +1,90 @@
+---
+
+#######
+# Apt #
+#######
+
+_irclogs_apt_packages:
+  - name: irssi
+  - name: screen
+
+#########
+# Files #
+#########
+
+_irclogs_files:
+  - path:  "/home/{{ _user }}/bin"
+    state: directory
+    owner: "{{ _user }}"
+    group: users
+  - path:  "/home/{{ _user }}/.irssi"
+    state: directory
+    owner: "{{ _user }}"
+    mode:  "u=rwx"
+    group: users
+  - path:  "{{ _irclogs_dir }}"
+    state: directory
+    owner: "{{ _user }}"
+    group: users
+  - path:  "{{ _irclogs_www_dir }}"
+    state: directory
+    owner: "{{ _user }}"
+    group: users
+  - path:  "/home/{{ _user }}/.irssi/anaiscfg"
+    state: file
+    owner: "{{ _user }}"
+    group: users
+    template: "{{ playbook_dir ~ '/templates/irclogs/anaiscfg.j2' }}"
+  - path:  "/home/{{ _user }}/bin/logscript.sh"
+    state: file
+    owner: "{{ _user }}"
+    group: users
+    mode:  "u=rwx"
+    template: "{{ playbook_dir ~ '/templates/irclogs/logscript.sh.j2' }}"
+  - path:  "/home/{{ _user }}/bin/logarchive.sh"
+    state: file
+    owner: "{{ _user }}"
+    group: users
+    mode:  "u=rwx"
+    template: "{{ playbook_dir ~ '/templates/irclogs/logarchive.sh.j2' }}"
+
+
+#########
+# Nginx #
+#########
+
+_irclogs_nginx_configs:
+  - file:     .htpasswd
+    template: "{{ playbook_dir ~ '/templates/irclogs/htpasswd.j2' }}"
+  - file:     "{{ _irclogs_host }}.conf"
+    template: configs/server_{{ _env }}.conf.j2
+    config:
+      - server_name:          "{{ _irclogs_host }}"
+      - root:                 "{{ _irclogs_www_dir }}"
+      - access_log:           "{{ elao_nginx_log_dir }}/irclogs.access.log"
+      - error_log:            "{{ elao_nginx_log_dir }}/irclogs.error.log"
+      - include:              conf.d/gzip
+      - default_type:         text/plain
+      - charset:              utf-8
+      - source_charset:       utf-8
+      - autoindex:            true
+      - auth_basic:           Restricted
+      - auth_basic_user_file: conf.d/.htpasswd
+
+#########
+# Crons #
+#########
+
+_irclogs_cron_files:
+  - file: irclogs
+    user: "{{ _user }}"
+    jobs:
+      - name:   logscript
+        job:    "/home/{{ _user }}/bin/logscript.sh"
+        minute: "*"
+        hour:   "*"
+      - name:    logarchive
+        job:     "/home/{{ _user }}/bin/logarchive.sh"
+        minute:  5
+        hour:    0
+        day:     1

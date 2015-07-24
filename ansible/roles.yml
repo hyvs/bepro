@@ -65,3 +65,7 @@
 - src:     https://github.com/ElaoInfra/ansible-role-mysql
   name:    elao.mysql
   version: origin/1.0
+
+- src:     https://github.com/ElaoInfra/ansible-role-cron
+  name:    elao.cron
+  version: origin/1.0

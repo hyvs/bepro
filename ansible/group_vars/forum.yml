@@ -103,7 +103,7 @@ elao_php_configs:
 
 elao_nginx_config_template: config/http_{{ _env }}.conf.j2
 
-elao_nginx_configs_exclusive: true
+elao_nginx_configs_exclusive: false
 elao_nginx_configs:
   # Php fpm
   - file:     php_fpm_params

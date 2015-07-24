@@ -93,3 +93,25 @@
     - { role: elao.files, tags: ['files'],
         elao_files: "{{ _teamspeak_files }}"
       }
+
+- hosts: irclogs
+  sudo:  yes
+  vars_files:
+    - vars/vault.yml
+  vars:
+    _irclogs_dir:      "/home/{{ _user }}/irclogs"
+    _irclogs_www_dir:  "/home/{{ _user }}/www_irclogs"
+    _irclogs_host:     "{{ 'irclogs.adundev.dev' if 'env_dev' in group_names else 'irclogs.adundev.net' }}"
+  roles:
+    - { role: elao.apt, tags: ['irclogs', 'apt'],
+        elao_apt_packages: "{{ _irclogs_apt_packages }}"
+      }
+    - { role: elao.files, tags: ['irclogs', 'files'],
+        elao_files: "{{ _irclogs_files }}"
+      }
+    - { role: elao.nginx, tags: ['irclogs', 'nginx'],
+        elao_nginx_configs: "{{ _irclogs_nginx_configs }}"
+      }
+    - { role: elao.cron, tags: ['irclogs', 'cron'],
+        elao_cron_files: "{{ _irclogs_cron_files }}"
+      }

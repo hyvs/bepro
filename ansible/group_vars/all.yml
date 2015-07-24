@@ -65,3 +65,6 @@ elao_git_config_template: config/{{ _env }}.j2
 elao_ohmyzsh_users:
   - user:     "{{ _user }}"
     template: users/{{ _env }}.j2
+    config:
+      - |
+        alias anais='screen -U -S anais irssi --config=~/.irssi/anaiscfg'
