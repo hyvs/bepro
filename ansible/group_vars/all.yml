@@ -14,7 +14,7 @@ elao_motd:           eXcellent
 # Timezone #
 ############
 
-elao_timezone: Etc/UTC
+elao_timezone: Europe/Paris
 
 #######
 # Env #
