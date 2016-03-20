@@ -12,6 +12,7 @@ elao_users:
 _users_admin_keys:
   - "{{ lookup('file', playbook_dir ~ '/files/users/keys/hyvs') }}"
   - "{{ lookup('file', playbook_dir ~ '/files/users/keys/kariboo') }}"
+  - "{{ lookup('file', playbook_dir ~ '/files/users/keys/targon') }}"
 
 _users_bepro_keys:
   - "{{ lookup('file', playbook_dir ~ '/files/users/keys/adun') }}"
