@@ -74,6 +74,7 @@ _forum_files:
 # Php #
 #######
 
+elao_php_version: 5
 elao_php_sapis: ['cli', 'fpm']
 
 elao_php_fpm_pools_exclusive: true

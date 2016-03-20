@@ -50,7 +50,7 @@
     - { role: elao.files, tags: ['files'],
         elao_files: "{{ _forum_files }}"
       }
-    - { role: elao.php }
+    - { role: elao.php, tags: ['php'] }
     - { role: elao.curl }
     - { role: elao.composer }
     - { role: elao.nginx }
